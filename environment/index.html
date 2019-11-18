@@ -1,0 +1,110 @@
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=description content="Porting DEAP implementation of GP to run on a Spark cluster"><link href=https://hhmida.github.io/gp-spark-doc/environment/ rel=canonical><meta name=author content="Hmida Hmida"><meta name=lang:clipboard.copy content="Copy to clipboard"><meta name=lang:clipboard.copied content="Copied to clipboard"><meta name=lang:search.language content=en><meta name=lang:search.pipeline.stopwords content=True><meta name=lang:search.pipeline.trimmer content=True><meta name=lang:search.result.none content="No matching documents"><meta name=lang:search.result.one content="1 matching document"><meta name=lang:search.result.other content="# matching documents"><meta name=lang:search.tokenizer content=[\s\-]+><link rel="shortcut icon" href=../assets/images/gp.png><meta name=generator content="mkdocs-1.0.4, mkdocs-material-4.4.3"><title>Preparing the environment - GP over Spark cluster</title><link rel=stylesheet href=../assets/stylesheets/application.30686662.css><link rel=stylesheet href=../assets/stylesheets/application-palette.a8b3c06d.css><meta name=theme-color content=#2196f3><script src=../assets/javascripts/modernizr.74668098.js></script><link href=https://fonts.gstatic.com rel=preconnect crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono&display=fallback"><style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style><link rel=stylesheet href=../assets/fonts/material-icons.css><script>
+  window.ga = window.ga || function() {
+    (ga.q = ga.q || []).push(arguments)
+  }
+  ga.l = +new Date
+  /* Setup integration and send page view */
+  ga("create", "None", "auto")
+  ga("set", "anonymizeIp", true)
+  ga("send", "pageview")
+  /* Register handler to log search on blur */
+  document.addEventListener("DOMContentLoaded", () => {
+    if (document.forms.search) {
+      var query = document.forms.search.query
+      query.addEventListener("blur", function() {
+        if (this.value) {
+          var path = document.location.pathname;
+          ga("send", "pageview", path + "?q=" + this.value)
+        }
+      })
+    }
+  })
+</script><script async src=https://www.google-analytics.com/analytics.js></script></head> <body dir=ltr data-md-color-primary=blue data-md-color-accent=red> <svg class=md-svg> <defs> </defs> </svg> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay data-md-component=overlay for=__drawer></label> <a href=#preparing-the-environment tabindex=1 class=md-skip> Skip to content </a> <header class=md-header data-md-component=header> <nav class="md-header-nav md-grid"> <div class=md-flex> <div class="md-flex__cell md-flex__cell--shrink"> <a href=https://hhmida.github.io/gp-spark-doc/ title="GP over Spark cluster" class="md-header-nav__button md-logo"> <i class=md-icon></i> </a> </div> <div class="md-flex__cell md-flex__cell--shrink"> <label class="md-icon md-icon--menu md-header-nav__button" for=__drawer></label> </div> <div class="md-flex__cell md-flex__cell--stretch"> <div class="md-flex__ellipsis md-header-nav__title" data-md-component=title> <span class=md-header-nav__topic> GP over Spark cluster </span> <span class=md-header-nav__topic> Preparing the environment </span> </div> </div> <div class="md-flex__cell md-flex__cell--shrink"> <label class="md-icon md-icon--search md-header-nav__button" for=__search></label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=query data-md-state=active> <label class="md-icon md-search__icon" for=__search></label> <button type=reset class="md-icon md-search__icon" data-md-component=reset tabindex=-1> &#xE5CD; </button> </form> <div class=md-search__output> <div class=md-search__scrollwrap data-md-scrollfix> <div class=md-search-result data-md-component=result> <div class=md-search-result__meta> Type to start searching </div> <ol class=md-search-result__list></ol> </div> </div> </div> </div> </div> </div> </div> </nav> </header> <div class=md-container> <main class=md-main role=main> <div class="md-main__inner md-grid" data-md-component=container> <div class="md-sidebar md-sidebar--primary" data-md-component=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary" data-md-level=0> <label class="md-nav__title md-nav__title--site" for=__drawer> <a href=https://hhmida.github.io/gp-spark-doc/ title="GP over Spark cluster" class="md-nav__button md-logo"> <i class=md-icon></i> </a> GP over Spark cluster </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=.. title=About class=md-nav__link> About </a> </li> <li class="md-nav__item md-nav__item--active"> <input class="md-toggle md-nav__toggle" data-md-toggle=toc type=checkbox id=__toc> <label class="md-nav__link md-nav__link--active" for=__toc> Preparing the environment </label> <a href=./ title="Preparing the environment" class="md-nav__link md-nav__link--active"> Preparing the environment </a> <nav class="md-nav md-nav--secondary"> <label class=md-nav__title for=__toc>Table of contents</label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=#docker-images class=md-nav__link> Docker images </a> </li> <li class=md-nav__item> <a href=#installation class=md-nav__link> Installation </a> <nav class=md-nav> <ul class=md-nav__list> <li class=md-nav__item> <a href=#options class=md-nav__link> Options </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#putting-data-files-on-hdfs class=md-nav__link> Putting data files on HDFS </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=../notebook/ title="Interactive execution with jupyter notebook" class=md-nav__link> Interactive execution with jupyter notebook </a> </li> <li class=md-nav__item> <a href=../submitting/ title="Submitting to the cluster" class=md-nav__link> Submitting to the cluster </a> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary"> <label class=md-nav__title for=__toc>Table of contents</label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=#docker-images class=md-nav__link> Docker images </a> </li> <li class=md-nav__item> <a href=#installation class=md-nav__link> Installation </a> <nav class=md-nav> <ul class=md-nav__list> <li class=md-nav__item> <a href=#options class=md-nav__link> Options </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#putting-data-files-on-hdfs class=md-nav__link> Putting data files on HDFS </a> </li> </ul> </nav> </div> </div> </div> <div class=md-content> <article class="md-content__inner md-typeset"> <h1 id=preparing-the-environment><img src=../assets/images/docker.png width=90 height=80> Preparing the environment<a class=headerlink href=#preparing-the-environment title="Permanent link">&para;</a></h1> <hr> <p>In order to run the sample code we need to create a docker based cluster with the required software and configurations. The docker containers are adapted from <a href=https://github.com/rubenafo/docker-spark-cluster>rubenafo/docker-spark-cluster</a>. You can read this <a href=https://medium.com/@rubenafo/some-tips-to-run-a-multi-node-hadoop-in-docker-9c7012dd4e26>article</a> for more details about docker containers configuration.</p> <p>This environment consists of 4 nodes running in 4 seperate containers. Each node provides the following components:</p> <ol> <li>Scala, java and Python</li> <li>Hadoop and Spark</li> <li>A configured cluster orchestrated by YARN composed of 4 nodes:<ul> <li>nodemaster (master node)</li> <li>node2 (slave)</li> <li>node3 (slave)</li> <li>node4 (slave)</li> </ul> </li> </ol> <h2 id=docker-images>Docker images<a class=headerlink href=#docker-images title="Permanent link">&para;</a></h2> <p>Two images are used. The first, called <strong>scalabase</strong>, is based on <a href=https://hub.docker.com/_/openjdk/ >openjdk:8</a> and with required Python packages:</p> <ul> <li>numpy</li> <li>DEAP</li> <li>pyspark</li> <li>jupyter <div class=codehilite><pre><span></span><span class=k>from</span><span class=s> openjdk:8</span>
+
+<span class=k>MAINTAINER</span><span class=s> Hmida Hmida &lt;hhmida@gmail.com&gt;</span>
+
+USER root
+<span class=k>EXPOSE</span><span class=s> 22/tcp</span>
+<span class=k>EXPOSE</span><span class=s> 22/udp</span>
+
+<span class=k>RUN</span> apt-get update <span class=o>&amp;&amp;</span> <span class=se>\</span>
+    apt-get install -y --no-install-recommends openssh-server vim
+
+<span class=k>WORKDIR</span><span class=s> /tmp</span>
+<span class=k>RUN</span> wget https://bootstrap.pypa.io/get-pip.py <span class=o>&amp;&amp;</span> python get-pip.py <span class=o>&amp;&amp;</span> pip install numpy deap jupyter pyspark
+<span class=k>RUN</span> wget https://downloads.lightbend.com/scala/2.12.5/scala-2.12.5.tgz <span class=o>&amp;&amp;</span> <span class=se>\</span>
+    tar xzf scala-2.12.5.tgz <span class=o>&amp;&amp;</span> <span class=se>\</span>
+    mv scala-2.12.5 /usr/share/scala <span class=o>&amp;&amp;</span> <span class=se>\</span>
+    ln -s /usr/share/scala/bin/* /usr/bin <span class=o>&amp;&amp;</span> <span class=se>\ </span>
+    rm scala-2.12.5.tgz <span class=o>&amp;&amp;</span> <span class=se>\</span>
+<span class=se>\</span>
+    <span class=nb>echo</span> <span class=s2>&quot;PubkeyAuthentication yes&quot;</span> &gt;&gt; /etc/ssh/ssh_config <span class=o>&amp;&amp;</span> <span class=se>\</span>
+    <span class=nb>echo</span> <span class=s2>&quot;Host *&quot;</span> &gt;&gt; /etc/ssh/ssh_config
+
+<span class=k>CMD</span><span class=s> service ssh start &amp;&amp; sleep infinity</span>
+</pre></div></li> </ul> <p>The second image <strong>sparkbase</strong> adds <em>Hadoop</em> and <em>Spark</em> and the requires configuration steps. <div class=codehilite><pre><span></span><span class=k>FROM</span><span class=s> scalabase:latest</span>
+
+<span class=k>MAINTAINER</span><span class=s> Hmida Hmida &lt;hhmida@gmail.com&gt;</span>
+
+<span class=k>EXPOSE</span><span class=s> 8081</span>
+<span class=k>EXPOSE</span><span class=s> 8080</span>
+<span class=k>EXPOSE</span><span class=s> 8088</span>
+<span class=k>EXPOSE</span><span class=s> 7077</span>
+<span class=k>EXPOSE</span><span class=s> 9870</span>
+<span class=k>EXPOSE</span><span class=s> 4040</span>
+
+<span class=k>RUN</span> useradd -m -s /bin/bash hadoop
+
+<span class=k>WORKDIR</span><span class=s> /home/hadoop</span>
+
+USER hadoop
+<span class=k>RUN</span>  wget https://archive.apache.org/dist/hadoop/core/hadoop-3.2.0/hadoop-3.2.0.tar.gz
+<span class=k>RUN</span>  wget https://archive.apache.org/dist/spark/spark-2.4.0/spark-2.4.0-bin-without-hadoop.tgz
+
+<span class=k>RUN</span> tar -zxf hadoop-3.2.0.tar.gz <span class=o>&amp;&amp;</span> <span class=se>\</span>
+    mv hadoop-3.2.0 hadoop <span class=o>&amp;&amp;</span> <span class=se>\</span>
+    tar -zxf spark-2.4.0-bin-without-hadoop.tgz <span class=o>&amp;&amp;</span> <span class=se>\</span>
+    mv spark-2.4.0-bin-without-hadoop spark <span class=o>&amp;&amp;</span>  rm *gz
+
+<span class=k>RUN</span> mkdir -p /home/hadoop/.ssh /home/hadoop/hadoop/logs <span class=se>\</span>
+    /home/hadoop/data/nameNode /home/hadoop/data/dataNode <span class=se>\</span>
+    /home/hadoop/data/namesecondary /home/hadoop/data/tmp <span class=o>&amp;&amp;</span> <span class=se>\</span>
+    touch /home/hadoop/hadoop/logs/fairscheduler-statedump.log
+
+<span class=c># We don&#39;t care about the skeleton rc files, so overwrite</span>
+COPY config/shellrc /home/hadoop/.bashrc
+COPY config/shellrc /home/hadoop/.profile
+COPY config/id_rsa* /home/hadoop/.ssh/
+COPY config/id_rsa.pub  /home/hadoop/.ssh/authorized_keys
+COPY config/workers /home/hadoop/spark/conf/slaves
+COPY config/sparkcmd.sh /home/hadoop/
+COPY config/hadoop-env.sh /home/hadoop/
+
+COPY config/core-site.xml config/hdfs-site.xml config/mapred-site.xml <span class=se>\</span>
+    config/yarn-site.xml config/workers /home/hadoop/hadoop/etc/hadoop/
+
+USER hadoop
+<span class=k>RUN</span> cat /home/hadoop/hadoop-env.sh &gt;&gt; /home/hadoop/hadoop/etc/hadoop/hadoop-env.sh
+
+USER root
+<span class=k>RUN</span> chown -R hadoop /home/hadoop/.ssh /home/hadoop/.bashrc /home/hadoop/.profile <span class=se>\</span>
+    /home/hadoop/data /home/hadoop/hadoop-env.sh
+<span class=k>CMD</span><span class=s> service ssh start &amp;&amp; sleep infinity</span>
+</pre></div></p> <h2 id=installation>Installation<a class=headerlink href=#installation title="Permanent link">&para;</a></h2> <ol> <li>Clone the repository <div class=codehilite><pre><span></span>git clone https://github.com/hhmida/gp-spark
+</pre></div></li> <li>Create the first docker image <strong>scalabase</strong> <div class=codehilite><pre><span></span><span class=nb>cd</span> scalabase
+ ./build.sh
+</pre></div></li> <li>Create the second docker image <strong>sparkbase</strong> <div class=codehilite><pre><span></span><span class=nb>cd</span> ../spark
+sudo ./build.sh
+</pre></div></li> <li>Deploying the cluster <div class=codehilite><pre><span></span><span class=nb>cd</span> ..
+./cluster.sh deploy
+</pre></div> The source code will be available via docker volume option in the folder <strong>/opt/spark-apps</strong> The script will finish displaying the Hadoop and Spark admin URLs:<ul> <li>Hadoop info @ nodemaster: <a href=http://172.18.1.1:8088/cluster>http://172.18.1.1:8088/cluster</a></li> <li>Spark info @ nodemaster : <a href=http://172.18.1.1:8080/ >http://172.18.1.1:8080/</a></li> <li>DFS Health @ nodemaster : <a href=http://172.18.1.1:9870/dfshealth.html>http://172.18.1.1:9870/dfshealth.html</a></li> <li>Jupyter notebook: <a href=http://172.18.1.1:8888/?tree>http://172.18.1.1:8888/?tree</a></li> </ul> </li> </ol> <details class=warning open=open><summary>URLs</summary><p>The IP address may differ from the example and changes upon redeploying and restarting the cluster.</p> </details> <h3 id=options>Options<a class=headerlink href=#options title="Permanent link">&para;</a></h3> <div class=codehilite><pre><span></span>cluster.sh stop   <span class=c1># Stop the cluster</span>
+cluster.sh start  <span class=c1># Start the cluster</span>
+cluster.sh info   <span class=c1># Shows handy URLs of running cluster</span>
+cluster.sh deploy <span class=c1># Format the cluster and deploy images again</span>
+</pre></div> <details class=warning open=open><summary>Redeploying the cluster</summary><p><div class=codehilite><pre><span></span>cluster.sh deploy <span class=c1># Format the cluster and deploy images again</span>
+</pre></div> This will remove everything from HDFS. The content of <strong>/opt/spark-apps</strong> will not be changed.</p> </details> <h2 id=putting-data-files-on-hdfs>Putting data files on HDFS<a class=headerlink href=#putting-data-files-on-hdfs title="Permanent link">&para;</a></h2> <ol> <li>First, you need to connect to a node (here the nodemaster). <div class=codehilite><pre><span></span>docker <span class=nb>exec</span> -it -u hadoop nodemaster bash
+</pre></div></li> <li>Then copying the file on Hadoop file system: <div class=codehilite><pre><span></span><span class=nb>cd</span> /opt/spark-apps
+hadoop fs -put file
+</pre></div></li> </ol> <details class=info open=open><summary>Higgs Training and Test sets</summary><p>The <a href=https://archive.ics.uci.edu/ml/datasets/HIGGS>Higgs dataset</a> has <mark>7 GB</mark> of data. The docker based cluster cannot process this amount of data. We put only 1/1000 of the real data. <div class=codehilite><pre><span></span>hadoop fs -put /opt/spark-apps/HIGGS_Training_Scaled_10500.csv
+hadoop fs -put /opt/spark-apps/HIGGS_Test_Scaled_500.csv
+</pre></div></p> </details> </article> </div> </div> </main> <footer class=md-footer> <div class=md-footer-nav> <nav class="md-footer-nav__inner md-grid"> <a href=.. title=About class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel=prev> <div class="md-flex__cell md-flex__cell--shrink"> <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i> </div> <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"> <span class=md-flex__ellipsis> <span class=md-footer-nav__direction> Previous </span> About </span> </div> </a> <a href=../notebook/ title="Interactive execution with jupyter notebook" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel=next> <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"> <span class=md-flex__ellipsis> <span class=md-footer-nav__direction> Next </span> Interactive execution with jupyter notebook </span> </div> <div class="md-flex__cell md-flex__cell--shrink"> <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i> </div> </a> </nav> </div> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> <div class=md-footer-copyright__highlight> Copyright &copy; 2019 Hmida Hmida </div> powered by <a href=https://www.mkdocs.org>MkDocs</a> and <a href=https://squidfunk.github.io/mkdocs-material/ > Material for MkDocs</a> </div> <div class=md-footer-social> <link rel=stylesheet href=../assets/fonts/font-awesome.css> <a href=https://github.com/hhmida class="md-footer-social__link fa fa-github-alt"></a> <a href=https://linkedin.com/in/squidfunk class="md-footer-social__link fa fa-linkedin"></a> </div> </div> </div> </footer> </div> <script src=../assets/javascripts/application.ac79c3b0.js></script> <script>app.initialize({version:"1.0.4",url:{base:".."}})</script> </body> </html>
